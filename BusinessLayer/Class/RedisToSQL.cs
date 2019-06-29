@@ -13,6 +13,8 @@ namespace BusinessLayer.Class
     {
 
         IBidBuilder _bidBuilder;
+
+   
         public RedisToSQL(IBidBuilder bidBuilder)
         {
             _bidBuilder = bidBuilder;
@@ -36,6 +38,7 @@ namespace BusinessLayer.Class
 
                 cmd.Parameters.Add(objSqlParameter);
                 cmd.ExecuteReader();
+               
             }
             catch (Exception ex)
             {
@@ -46,7 +49,10 @@ namespace BusinessLayer.Class
                 con.Close();
             }
         }
-
+        private void saveLatestBidIdinRedis()
+        {
+            _bidBuilder.SaveBidIdFromSQl(GetMaxBidId());
+        }
         private DataTable FillBidDetails()
         {
             DataTable dtBidDetails = new DataTable() { TableName = "tvp_biddetails" };
@@ -57,6 +63,7 @@ namespace BusinessLayer.Class
 
 
             List<BidDetails> bidDetails = _bidBuilder.GetAllRedisBid();
+           
 
             foreach (BidDetails bid in bidDetails)
             {
@@ -91,7 +98,40 @@ namespace BusinessLayer.Class
                         BasePrice = Convert.ToDecimal(sqlDr["baseprice"])
                     });
                 }
+               
+
+                saveLatestBidIdinRedis();
                 return lstProducts;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        public int GetMaxBidId()
+        {
+            int maxBidId = 0;
+            SqlCommand cmd;
+            string connetionString = @"Data Source=hxbidauction.database.windows.net;Initial Catalog=dev_auction;User ID=AZSQL;Password=Password@123";
+            SqlConnection con = new SqlConnection(connetionString);
+            con.Open();
+            try
+            {
+                cmd = new SqlCommand("USP_GetMaxBidId", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader sqlDr = cmd.ExecuteReader();
+                if (sqlDr != null)
+                {
+                    if (sqlDr.Read())
+                    {
+                        maxBidId = Convert.ToInt16(sqlDr["maxBidId"]);
+                    }
+                }
+                return maxBidId;
             }
             catch (Exception ex)
             {

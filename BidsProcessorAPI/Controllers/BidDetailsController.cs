@@ -11,7 +11,7 @@ using BusinessLayer.Interface;
 
 namespace BidsProcessorAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BidDetailsController : ControllerBase
     {
@@ -21,6 +21,7 @@ namespace BidsProcessorAPI.Controllers
             _bidBusiness = bidBusiness;
 
         }
+        [HttpGet]
         public IActionResult SaveBidDetails() {
             HttpRequestMessage request = new HttpRequestMessage();
             var headers = request.Headers;
@@ -33,7 +34,7 @@ namespace BidsProcessorAPI.Controllers
             }
             else { return BadRequest(); }
         }
-
+        [HttpGet]
         public IActionResult GetTopUsers( int count,int productId)
         {
             HttpRequestMessage request = new HttpRequestMessage();
@@ -47,6 +48,7 @@ namespace BidsProcessorAPI.Controllers
             }
             else { return BadRequest(); }
         }
+        [HttpGet]
         public IActionResult GetUserDetails( int productId,int userId)
         {
             HttpRequestMessage request = new HttpRequestMessage();

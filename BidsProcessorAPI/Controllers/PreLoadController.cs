@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BidsProcessorAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class PreLoadController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace BidsProcessorAPI.Controllers
 
         }
 
-       
+        [HttpGet]
         public IActionResult PreloadData()
         {
             try
@@ -32,6 +32,7 @@ namespace BidsProcessorAPI.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet]
         public IActionResult SaveSql()
         {
             try

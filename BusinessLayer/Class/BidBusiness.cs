@@ -25,6 +25,7 @@ namespace BusinessLayer.Class
                 {
 
                     _bidBuilder.SaveBid(bidDetails);
+                    _bidBuilder.SaveBidIdFromSQl(bidDetails.BidId);
                     return "Successfully saved";
                 }
                 else
@@ -71,5 +72,7 @@ namespace BusinessLayer.Class
                 return null;
             }
         }
+
+
     }
 }
