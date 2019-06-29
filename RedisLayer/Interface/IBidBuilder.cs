@@ -14,5 +14,8 @@ namespace RedisLayer.Interface
         int GetRankUser(int productId, int userId);
         int GetNewBidIdFromSQl();
         bool SaveBidIdFromSQl(int BidId);
+        bool SaveProducts(List<Products> products);
+        List<BidDetails> GetAllRedisBid();
+        List<Products> GetAllProducts();
     }
 }

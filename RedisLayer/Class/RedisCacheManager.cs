@@ -236,6 +236,9 @@ namespace RedisLayer.Class
                 case "BidHashKey":
                     return $"AuctionEngine2:Hash:Bids:1:{redisKeyParameters.ProductId}";
 
+                case "AllBidHashKey":
+                    return $"AuctionEngine2:Hash:AllBids:1";
+
                 case "AllBidsSortedSetKey":
                     return $"AuctionEngine2:SortedSet:Bids:1:{redisKeyParameters.ProductId}";
 
