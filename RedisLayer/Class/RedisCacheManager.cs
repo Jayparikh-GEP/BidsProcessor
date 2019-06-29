@@ -133,14 +133,7 @@ namespace RedisLayer.Class
             }
             return null;
         }
-        public static long GetHashLength(string key)
-        {
-            return RedisCon.HashLength(key);
-        }
-        public static long GetSortedSetLength(string key)
-        {
-            return RedisCon.SortedSetLength(key);
-        }
+      
         public static T GetHashItemValue<T>(string Key, string hashField)
         {
             T value = default(T);
@@ -151,22 +144,7 @@ namespace RedisLayer.Class
 
         }
 
-        public static bool RemoveKey(string key)
-        {
-            bool success = false;
-            if (RedisCon.KeyExists(key))
-                success = RedisCon.KeyDelete(key);
-
-            return success;
-        }
-        public static bool DeleteHashField(string hashKey, RedisValue hashField)
-        {
-            bool success = false;
-            if (RedisCon.KeyExists(hashKey))
-                success = RedisCon.HashDelete(hashKey, hashField);
-            return success;
-        }
-
+      
         public static string[] GetHashItemAllKeys(string key)
         {
             if (RedisCon.KeyExists(key)) { return RedisCon.HashKeys(key).ToStringArray(); }

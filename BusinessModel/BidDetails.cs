@@ -9,7 +9,7 @@ namespace BusinessModel
         public int BidId { get; set; }
         public int UserId { get; set; }
         public int ProductId { get; set; }
-        public int Amount { get; set; }
+        public decimal Amount { get; set; }
   
     }
 }
