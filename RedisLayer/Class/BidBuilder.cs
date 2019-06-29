@@ -122,5 +122,15 @@ namespace RedisLayer.Class
                 latestBid = RedisCacheManager.GetHashItemValue<BidDetails>(bidHashAllKey, redisValuesSortedSet[0]);
             return latestBid ?? null;
         }
+
+        public int GetNewBidIdFromSQl()
+        {
+          return Convert.ToInt32( RedisCacheManager.RedisCon.StringGet("BidIdSqlKey"))+1;
+        }
+
+        public bool SaveBidIdFromSQl(int BidId)
+        {
+            return RedisCacheManager.RedisCon.StringSet("BidIdSqlKey", BidId);
+        }
     }
 }
