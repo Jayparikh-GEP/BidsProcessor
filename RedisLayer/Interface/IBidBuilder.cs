@@ -9,7 +9,7 @@ namespace RedisLayer.Interface
     {
         BidDetails LastBidOfUser(int userId, int productId);
         bool SaveBid(BidDetails bid);
-        List<int> GetTopBidders(int productId, int topNum, int userId);
+        List<int> GetTopBidders(int productId, int topNum);
         Products GetProductDetails(int productId);
         int GetRankUser(int productId, int userId);
         int GetNewBidIdFromSQl();
@@ -17,5 +17,6 @@ namespace RedisLayer.Interface
         bool SaveProducts(List<Products> products);
         List<BidDetails> GetAllRedisBid();
         List<Products> GetAllProducts();
+       
     }
 }

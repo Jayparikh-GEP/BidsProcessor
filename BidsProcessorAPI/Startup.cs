@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLayer.Class;
+using BusinessLayer.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RedisLayer.Class;
+using RedisLayer.Interface;
 
 namespace BidsProcessorAPI
 {
@@ -25,6 +29,8 @@ namespace BidsProcessorAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddTransient<IBidBuilder, BidBuilder>();
+            services.AddTransient<IBidBusiness, BidBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

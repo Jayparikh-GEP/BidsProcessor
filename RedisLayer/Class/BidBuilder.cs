@@ -1,5 +1,6 @@
 ﻿using BusinessModel;
 using Newtonsoft.Json;
+using RedisLayer.Interface;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace RedisLayer.Class
 {
-    public class BidBuilder
+    public class BidBuilder: IBidBuilder
     {
         public bool SaveBid(BidDetails bid)
         {
@@ -48,12 +49,12 @@ namespace RedisLayer.Class
 
         }
 
-        public List<int> GetTopBidders(int productId, int topNum, int userId)
+        public List<int> GetTopBidders(int productId, int topNum)
         {
             RedisKeyParameters redisObj = new RedisKeyParameters
             {
-                ProductId = productId,
-                UserId = userId
+                ProductId = productId
+               
 
             };
             string bidHashAllKey = RedisCacheManager.GetRedisKey("BidHashKey", redisObj);
