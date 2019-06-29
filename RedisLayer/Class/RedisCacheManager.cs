@@ -224,51 +224,26 @@ namespace RedisLayer.Class
                 return value.ToString().PadLeft(paddingCount, '0');
             }
 
-            public static string GetRedisKey(string KeyType, RedisKeyParameters redisParam)
+            public static string GetRedisKey(string KeyType, RedisKeyParameters redisKeyParameters)
             {
 
-            //switch (KeyType)
-            //{
-            //    //case RedisConstants.EventsHashKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:Hash:Events";
+            switch(KeyType){
 
-            //    //case RedisConstants.LotsHashKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:Hash:Lots:{redisParam.EventCode}";
+                case "ProductKey":
+                    return $"BidProcessor:Hash:Products:1";
 
-            //    //case RedisConstants.InvitedSupplierHashKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:Hash:InvitedSuppliers:{redisParam.LotId}";
+                case "BidHashKey":
+                    return $"AuctionEngine2:Hash:Bids:1:{redisKeyParameters.ProductId}";
 
-            //    //case RedisConstants.InvitedSupplierAttributesHashKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:Hash:InvitedSupplierAttributes:{redisParam.LotId}";
+                case "AllBidsSortedSetKey":
+                    return $"AuctionEngine2:SortedSet:Bids:1:{redisKeyParameters.ProductId}";
 
-            //    //case RedisConstants.LotAllItemsHashkey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:Hash:Items:{redisParam.LotId}";
-
-            //    //case RedisConstants.PreBidHashKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:Hash:PreBids:{redisParam.LotId}";
-
-            //    //case RedisConstants.AllPreBidsSortedSetKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:SortedSet:PreBids:{redisParam.LotId}";
-
-            //    //case RedisConstants.PreBidSupplierHashKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:HashSupplier:PreBids:{redisParam.LotId}";
-
-            //    //case RedisConstants.BidHashKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:Hash:Bids:{redisParam.LotId}";
-
-            //    //case RedisConstants.AllBidsSortedSetKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:SortedSet:Bids:{redisParam.LotId}";
-
-            //    //case RedisConstants.AllBidsSortedSetForSupplierKey:
-            //    //    return $"AuctionEngine2:{redisParam.BuyerPartnerCode}:SortedSetSupplier:Bids:{redisParam.LotId}:{redisParam.ContactCode}";
-
-
-
-            //    //default:
-            //    //    return "";
-
-            //}
-            return "";
+                case "AllBidsSortedSetForSupplierKey":
+                    return $"AuctionEngine2:SortedSetSupplier:Bids:1:{redisKeyParameters.UserId}:{redisKeyParameters.ProductId}";
+                default:
+                    return "";
+            }
+            
             }
         }
     }
