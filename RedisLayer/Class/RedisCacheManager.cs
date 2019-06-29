@@ -30,7 +30,7 @@ namespace RedisLayer.Class
             private static string GetRedisConfig()
             {
                 string redisConfig = string.Empty;
-            redisConfig = "";
+            redisConfig = "bidauction.redis.cache.windows.net:6380,password=gjk1lruds8EElsCKqYOD50SKNjzyfJx7M59hbjVb3ac=,ssl=True,abortConnect=False;";
                 return redisConfig;
             }
 
