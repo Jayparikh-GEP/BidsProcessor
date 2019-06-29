@@ -21,14 +21,19 @@ namespace RedisLayer.Class
                     redisObj.UserId = bid.UserId;
                     redisObj.ProductId = bid.ProductId;
 
-                    string bidHashAllKey = RedisCacheManager.GetRedisKey("BidHashKey", redisObj);
-                    string bidSortedSetAllKey = RedisCacheManager.GetRedisKey("AllBidsSortedSetKey", redisObj);
-                    string bidSoertedSetSupplierKey = RedisCacheManager.GetRedisKey("AllBidsSortedSetForSupplierKey", redisObj);
+                    string bidHashAllKeyByProduct = RedisCacheManager.GetRedisKey("BidHashKey", redisObj);
+                    string bidSortedSetAllKeyByProduct = RedisCacheManager.GetRedisKey("AllBidsSortedSetKey", redisObj);
+                    string bidSoertedSetSupplierKeyByProduct = RedisCacheManager.GetRedisKey("AllBidsSortedSetForSupplierKey", redisObj);
+                    string bidAllHash = RedisCacheManager.GetRedisKey("AllBidHashKey", redisObj);
+
+                    string BidAllBidAllProduct = RedisCacheManager.GetRedisKey("", redisObj);
 
                     var trans = RedisCacheManager.RedisCon.CreateTransaction();
-                    trans.HashSetAsync(bidHashAllKey, RedisCacheManager.ConvertIntToStringWithLeftPadding(bid.BidId), JsonConvert.SerializeObject(bid));
-                    trans.SortedSetAddAsync(bidSortedSetAllKey, RedisCacheManager.ConvertIntToStringWithLeftPadding(bid.BidId), Convert.ToDouble(bid.Amount));
-                    trans.SortedSetAddAsync(bidSoertedSetSupplierKey, RedisCacheManager.ConvertIntToStringWithLeftPadding(bid.BidId), Convert.ToDouble(bid.Amount));
+                    string jsonBid = JsonConvert.SerializeObject(bid);
+                    trans.HashSetAsync(bidHashAllKeyByProduct, RedisCacheManager.ConvertIntToStringWithLeftPadding(bid.BidId), jsonBid);
+                    trans.SortedSetAddAsync(bidSortedSetAllKeyByProduct, RedisCacheManager.ConvertIntToStringWithLeftPadding(bid.BidId), Convert.ToDouble(bid.Amount));
+                    trans.SortedSetAddAsync(bidSoertedSetSupplierKeyByProduct, RedisCacheManager.ConvertIntToStringWithLeftPadding(bid.BidId), Convert.ToDouble(bid.Amount));
+                    trans.HashSetAsync(bidAllHash, RedisCacheManager.ConvertIntToStringWithLeftPadding(bid.BidId), jsonBid);
                     var exec = trans.ExecuteAsync();
 
                     return RedisCacheManager.RedisCon.Wait(exec);
@@ -121,6 +126,59 @@ namespace RedisLayer.Class
             if (redisValuesSortedSet != null && redisValuesSortedSet.Any())
                 latestBid = RedisCacheManager.GetHashItemValue<BidDetails>(bidHashAllKey, redisValuesSortedSet[0]);
             return latestBid ?? null;
+        }
+
+        public int GetNewBidIdFromSQl()
+        {
+            return Convert.ToInt32(RedisCacheManager.RedisCon.StringGet("BidIdSqlKey")) + 1;
+        }
+
+        public bool SaveBidIdFromSQl(int BidId)
+        {
+            return RedisCacheManager.RedisCon.StringSet("BidIdSqlKey", BidId);
+        }
+        public List<BidDetails> GetAllRedisBid()
+        {
+            RedisKeyParameters redisObj = new RedisKeyParameters();
+            string bidAllHash = RedisCacheManager.GetRedisKey("AllBidHashKey", redisObj);
+            return RedisCacheManager.GetHashAllValues<BidDetails>(bidAllHash);
+        }
+
+        public bool SaveProducts(List<Products> products)
+        {
+            try
+            {
+                if (products != null && products.Count > 0)
+                {
+                    var trans = RedisCacheManager.RedisCon.CreateTransaction();
+                    foreach (var item in products)
+                    {
+                        RedisKeyParameters redisObj = new RedisKeyParameters();
+
+                        string lotKey = RedisCacheManager.GetRedisKey("ProductKey", redisObj);
+                        trans.HashSetAsync(lotKey, item.ProductId.ToString(), JsonConvert.SerializeObject(item));
+
+                        //// Creating eventid set. Which will have all the eventIds in the set
+                        //string eventIdsKey = RedisCacheManager.GetRedisKey(RedisConstants.RedisKeys.EventIdsKey.ToString(), redisObj);
+                        //RedisCacheManager.PutSetData<string>(eventIdsKey, item.EventID.ToString());
+                    }
+
+                    var exec = trans.ExecuteAsync();
+
+                    return RedisCacheManager.RedisCon.Wait(exec);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            { return false; }
+
+        }
+
+        public List<Products> GetAllProducts()
+        {
+            RedisKeyParameters redisObj = new RedisKeyParameters();
+            string allProducts = RedisCacheManager.GetRedisKey("ProductKey", redisObj);
+            return RedisCacheManager.GetHashAllValues<Products>(allProducts);
         }
     }
 }
